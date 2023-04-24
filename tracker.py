@@ -57,19 +57,19 @@ def getCountry(ipAddress, returnType = 'plain'):
             else:
                 return getJsonResponse(countryLookup[returnType], ipAddress)
         else:
-            raise ValueError('\'returnType\' does not belong in valid types: ' + str(countryValidTypes))
+            raise ValueError('\'Esse retorno\' Nao pertence aos tipos aceitos ' + str(countryValidTypes))
     else:
-        raise TypeError('\'returnType\' must be of type \'str\'(' + type(returnType).__name__ + ' was given).')
+        raise TypeError('\'Este retorno\' deveria ser do tipo \'str\'(' + type(returnType).__name__ + ' was given).')
 
 def getGeoData(ipAddress):
     if isinstance(ipAddress, str):
         return getJsonResponse(geoJson, ipAddress)
     else:
-        raise TypeError("\'ipAddress\' is not an instance of list.")
+        raise TypeError("\'ipAddress\' nao e uma instancia da lista.")
 
 def getPTR(ipAddress):
     if not isinstance(ipAddress, str):
-        raise TypeError("\'ipAddress\' is not an instance of list.")
+        raise TypeError("\'ipAddress\' nao e uma instancia da lista.")
     return getPlainResponse(ptrPlain)
 
 def showCountryDetails(ip=''):
