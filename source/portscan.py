@@ -47,18 +47,19 @@ def get_timeout(host:str)->float:
 class PortScanner:
     def __init__(self,host:str,timeout_ms:float,num_threads:int,more:bool):
 
-        self.host(host)
-        self.timeout_ms(timeout_ms)
-        self.num_threads(num_threads)
+        self.host=host
+        self.timeout_ms=timeout_ms
+        self.num_threads=num_threads
+        self.error=False
 
         port_list = Top10k if more else Top1k
-        self.port_quere: queue.Queue[int]=queue.Queue()
+        self.port_queue: queue.Queue[int]=queue.Queue()
 
         for portas in port_list:
-            self.port_quere(portas)
+            self.port_queue.put(portas)
         self.result_lock = threading.Lock()
 
-        self.open_ports: list[int]
+        self.open_ports: list[int] = []
         self.error: str|None
         self.stop_event = threading.Event()
 
@@ -77,9 +78,9 @@ class PortScanner:
         return sorted(self.open_ports)
 
     def _worker(self):
-        while not  self.stop_event().is_set():
+        while not  self.stop_event.is_set():
             try:
-                port = self.port_quere.get_nowait()
+                port = self.port_queue.get_nowait()
             except queue.Empty:
                 break
             self._probe(port)
@@ -88,8 +89,8 @@ class PortScanner:
 
         try:
             with socket.socket(socket.AF_INET,socket.SOCK_STREAM) as sock:
-                sock.settimeout(self.timout_ms /1000)
-                status=sock.connect_ex((self.host.port))
+                sock.settimeout(self.timeout_ms /1000)
+                status=sock.connect_ex((self.host,port))
 
             if status == 0:
                 self._registerOpen(port)
@@ -119,8 +120,8 @@ def main():
     print(f'\n{clr.YELLOW}[Pingando o Dominio]{clr.RESET}')
     timeout_ms = args.timeout if args.timeout else get_timeout(args.host)
     print(f'Dominio: {clr.MAGENTA}{args.host}{clr.RESET}')
-    print(f'Timeout: {clr.MAGENTA}{args.host}{clr.RESET} ms')
-    print(f'Threads: {clr.MAGENTA}{args.host}{clr.RESET}')
+    print(f'Timeout: {clr.MAGENTA}{args.timeout}{clr.RESET} ms')
+    print(f'Threads: {clr.MAGENTA}{args.threads}{clr.RESET}')
 
     print(f'\n{clr.YELLOW}[Results]{clr.RESET}')
 
