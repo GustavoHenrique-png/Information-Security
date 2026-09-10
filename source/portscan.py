@@ -109,10 +109,6 @@ class PortScanner:
         with self.result_lock:
             self.open_ports.append(port)
 
-
-
-
-
 def main():
     start = time.time()
     args = parse_args()
