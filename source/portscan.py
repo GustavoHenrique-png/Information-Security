@@ -124,6 +124,7 @@ class PortScanner:
             self.open_ports.append(port)
 
 def main():
+    print(ART)
     start = time.time()
     args = parse_args()
 
